@@ -6,6 +6,12 @@ from .account_information import Position, Account
 from .authentication import SessionManager
 
 class Schwab(SessionManager):
+    @classmethod
+    async def create(_, **kwargs):
+        s = Schwab(**kwargs)
+        await s._init()
+        return s
+    
     def __init__(self, **kwargs):
         """
             The Schwab class. Used to interact with schwab.
@@ -13,7 +19,9 @@ class Schwab(SessionManager):
         """
         self.headless = kwargs.get("headless", True)
         self.browserType = kwargs.get("browserType", "firefox")
-        super(Schwab, self).__init__()
+
+    async def _init(self) -> None:
+        await super(Schwab, self)._init()
    
     def get_account_info(self):
         """
